@@ -61,6 +61,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+//Muestra resumen de transacciones
 const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
 
@@ -79,30 +80,30 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 
+//Muestra el balance
 const calcDisplayBalance = function(movements){
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
 
 
-const calcDisplaySummary = function(movements){
-  const incomes = movements
+//Muestra el resumen (Income, Outcome, Interest)
+const calcDisplaySummary = function(acc){
+  const incomes = acc.movements
   .filter(mov => mov > 0)
   .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
 
-  const outcomes = movements 
+  const outcomes = acc.movements
   .filter(mov => mov < 0)
   .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outcomes)}€`;
 
-  const interests = movements
+  const interests = acc.movements
   .filter(mov => mov > 0)
-  .map(deposit => (deposit * 1.2)/100)
+  .map(deposit => (deposit * acc.interestRate)/100)
   .filter((int, i, arr) => {
     console.log(arr);
     return int >= 1;
@@ -110,9 +111,9 @@ const calcDisplaySummary = function(movements){
   .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interests}€`
 };
-calcDisplaySummary(account1.movements);
 
 
+//Crea un username con la inicial de nombre y apellido
 const createUserNames = function (accs) {
   accs.forEach(function(acc) {
     acc.username = acc.owner
@@ -122,11 +123,42 @@ const createUserNames = function (accs) {
     .join('');
   })
 };
-
 createUserNames(accounts);
 
 
 
+//Manejo de evento con Login
+let currentAccount;
+
+btnLogin.addEventListener('click', function(e){
+  //evitar un login
+  e.preventDefault();
+
+  //Localiza la cuenta que se ingresa
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  console.log(currentAccount)
+
+  if(currentAccount?.pin === Number(inputLoginPin.value)){
+    //Muestra mensaje de bienvenida
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}!`
+    //muestra el estilo css una vez logged
+    containerApp.style.opacity = 100;
+
+    //Limpia info del user en text inputs
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    //Muestra movimientos
+    displayMovements(currentAccount.movements);
+
+    //Muestra balance
+    calcDisplayBalance(currentAccount.movements);
+
+    //Muestra resumen
+    calcDisplaySummary(currentAccount);
+
+  }
+});
 
 
 
