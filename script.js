@@ -78,7 +78,7 @@ const displayMovements = function (movements, sort = false) {
             <div class="movements__type movements__type--${type}">
             ${i + 1} ${type}
             </div>
-            <div class="movements__value">${mov}€</div>
+            <div class="movements__value">$${mov}</div>
         </div>
     `;
 
@@ -90,7 +90,7 @@ const displayMovements = function (movements, sort = false) {
 //Muestra el balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `$${acc.balance}`;
 };
 
 
@@ -99,12 +99,12 @@ const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `$${incomes}`;
 
   const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+  labelSumOut.textContent = `$${Math.abs(outcomes)}`;
 
   const interests = acc.movements
     .filter(mov => mov > 0)
@@ -114,7 +114,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interests}€`;
+  labelSumInterest.textContent = `$${interests}`;
 };
 
 
@@ -248,6 +248,9 @@ btnSort.addEventListener('click', function(e){
   displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
 });
+
+
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
