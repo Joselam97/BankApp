@@ -81,66 +81,77 @@ const displayMovements = function (movements) {
   });
 };
 
-
 //Muestra el balance
-const calcDisplayBalance = function(movements){
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
-
 //Muestra el resumen (Income, Outcome, Interest)
-const calcDisplaySummary = function(acc){
+const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
-  .filter(mov => mov > 0)
-  .reduce((acc, mov) => acc + mov, 0);
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
 
   const outcomes = acc.movements
-  .filter(mov => mov < 0)
-  .reduce((acc, mov) => acc + mov, 0);
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outcomes)}€`;
 
   const interests = acc.movements
-  .filter(mov => mov > 0)
-  .map(deposit => (deposit * acc.interestRate)/100)
-  .filter((int, i, arr) => {
-    console.log(arr);
-    return int >= 1;
-  })
-  .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interests}€`
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interests}€`;
 };
-
 
 //Crea un username con la inicial de nombre y apellido
 const createUserNames = function (accs) {
-  accs.forEach(function(acc) {
+  accs.forEach(function (acc) {
     acc.username = acc.owner
-    .toLowerCase()
-    .split(' ')
-    .map(name => name[0])
-    .join('');
-  })
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
 };
 createUserNames(accounts);
 
+
+//Funcion que muestra informacion de la cuenta
+const updateUI = function(acc){
+  //Muestra transacciones
+  displayMovements(acc.movements);
+  //Muestra balance
+  calcDisplayBalance(acc);
+  //Muestra resumen
+  calcDisplaySummary(acc);
+}
 
 
 //Manejo de evento con Login
 let currentAccount;
 
-btnLogin.addEventListener('click', function(e){
+btnLogin.addEventListener('click', function (e) {
   //evitar un login
   e.preventDefault();
 
   //Localiza la cuenta que se ingresa
-  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
-  console.log(currentAccount)
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
 
-  if(currentAccount?.pin === Number(inputLoginPin.value)){
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
     //Muestra mensaje de bienvenida
-    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}!`
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }!`;
     //muestra el estilo css una vez logged
     containerApp.style.opacity = 100;
 
@@ -148,20 +159,34 @@ btnLogin.addEventListener('click', function(e){
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
-    //Muestra movimientos
-    displayMovements(currentAccount.movements);
-
-    //Muestra balance
-    calcDisplayBalance(currentAccount.movements);
-
-    //Muestra resumen
-    calcDisplaySummary(currentAccount);
-
+    updateUI(currentAccount);
   }
 });
 
+//Implementa Transferencias
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
 
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  
+  inputTransferAmount.value = inputTransferTo.value = '';
 
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    //Hace la transferencia
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -177,7 +202,6 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-
 const eurToUsd = 1.1;
 
 const movementsUSD = movements.map(mov => mov * eurToUsd);
@@ -189,14 +213,14 @@ const movementDescriptions = movements.map(
     )}`
 );
 
-const deposits = movements.filter(function (mov){
+const deposits = movements.filter(function (mov) {
   return mov > 0;
 });
-console.log(movements)
-console.log(deposits)
+console.log(movements);
+console.log(deposits);
 
 const depositsFor = [];
-for (const mov of movements) if(mov > 0) depositsFor.push(mov);
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
 console.log(depositsFor);
 
 const withdrawals = [];
