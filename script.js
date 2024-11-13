@@ -61,11 +61,16 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+
 //Muestra resumen de transacciones
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => 
+  a - b) : movements;
+
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -81,11 +86,13 @@ const displayMovements = function (movements) {
   });
 };
 
+
 //Muestra el balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${acc.balance}€`;
 };
+
 
 //Muestra el resumen (Income, Outcome, Interest)
 const calcDisplaySummary = function (acc) {
@@ -110,6 +117,7 @@ const calcDisplaySummary = function (acc) {
   labelSumInterest.textContent = `${interests}€`;
 };
 
+
 //Crea un username con la inicial de nombre y apellido
 const createUserNames = function (accs) {
   accs.forEach(function (acc) {
@@ -122,6 +130,7 @@ const createUserNames = function (accs) {
 };
 createUserNames(accounts);
 
+
 //Funcion que muestra informacion de la cuenta
 const updateUI = function (acc) {
   //Muestra transacciones
@@ -132,9 +141,11 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+
 //Manejo de evento con Login
 let currentAccount;
 
+//Funcion para Login
 btnLogin.addEventListener('click', function (e) {
   //evitar un login
   e.preventDefault();
@@ -161,6 +172,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+
 //Implementa Transferencias
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -186,6 +198,25 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+
+//Solicita Loan
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => 
+    mov >= amount * 0.1)) {
+      //Agrega movimiento
+      currentAccount.movements.push(amount);
+
+      //Restablece estilo
+      updateUI(currentAccount)
+    }
+    inputLoanAmount.value = '';
+});
+
+
 //Borrar cuentas
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
@@ -208,6 +239,15 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+
+//Funcionalidad para ordenar transacciones
+let sorted = false;
+btnSort.addEventListener('click', function(e){
+  e.preventDefault();
+
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
