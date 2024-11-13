@@ -122,17 +122,15 @@ const createUserNames = function (accs) {
 };
 createUserNames(accounts);
 
-
 //Funcion que muestra informacion de la cuenta
-const updateUI = function(acc){
+const updateUI = function (acc) {
   //Muestra transacciones
   displayMovements(acc.movements);
   //Muestra balance
   calcDisplayBalance(acc);
   //Muestra resumen
   calcDisplaySummary(acc);
-}
-
+};
 
 //Manejo de evento con Login
 let currentAccount;
@@ -171,7 +169,7 @@ btnTransfer.addEventListener('click', function (e) {
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
-  
+
   inputTransferAmount.value = inputTransferTo.value = '';
 
   if (
@@ -186,6 +184,28 @@ btnTransfer.addEventListener('click', function (e) {
 
     updateUI(currentAccount);
   }
+});
+
+//Borrar cuentas
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+
+    //Borra la cuenta
+    accounts.splice(index, 1);
+
+    //Quita el estilo reflejado de la cuenta
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
 });
 
 /////////////////////////////////////////////////
