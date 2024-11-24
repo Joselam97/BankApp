@@ -41,8 +41,8 @@ const account2 = {
     '2024-12-02T23:36:17.929Z',
     '2024-12-04T10:32:36.790Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'GBP',
+  locale: 'en-UK',
 };
 
 const account3 = {
@@ -81,7 +81,7 @@ const account4 = {
     '2024-12-02T23:36:17.929Z',
     '2024-12-05T10:32:36.790Z',
   ],
-  currency: 'EUR',
+  currency: 'USD',
   locale: 'es-ES',
 };
 
@@ -114,6 +114,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 
+
 // Funcion para dar formato a la fecha
 const formatMovementDate = function (date, locale) {
   const calcDisplayPassed = (date1, date2) =>
@@ -135,6 +136,17 @@ const formatMovementDate = function (date, locale) {
 };
 
 
+
+//Funcion para formatear currencies
+const formatCurr = function(value, locale, currency){
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
+
+
 //Muestra resumen de transacciones
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
@@ -149,13 +161,21 @@ const displayMovements = function (acc, sort = false) {
     const date = new Date(acc.movementsDates[i]);
     const displayDate = formatMovementDate(date, acc.locale);
 
+
+
+    //Variable que usa la funcion de dar formato al currency
+    const formattedMov = formatCurr(mov, acc.locale, acc.currency);
+
+
+
+    //Muestra informacion proveniente de html, pero formateada a cada cuenta
     const html = `
         <div class="movements__row">
             <div class="movements__type movements__type--${type}">
             ${i + 1} ${type}
             </div>
             <div class="movements__date">${displayDate}</div>
-            <div class="movements__value">${mov.toFixed(2)}€</div>
+            <div class="movements__value">${formattedMov}</div>
         </div>
     `;
 
@@ -163,23 +183,28 @@ const displayMovements = function (acc, sort = false) {
   });
 };
 
+
+
 //Muestra el balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+
+  labelBalance.textContent = formatCurr(acc.balance, acc.locale, acc.currency);
 };
+
+
 
 //Muestra el resumen (Income, Outcome, Interest)
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCurr(incomes, acc.locale, acc.currency);
 
   const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes).toFixed(2)}€`;
+  labelSumOut.textContent = formatCurr(Math.abs(outcomes), acc.locale, acc.currency);
 
   const interests = acc.movements
     .filter(mov => mov > 0)
@@ -189,8 +214,10 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interests.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCurr(interests, acc.locale, acc.currency);
 };
+
+
 
 //Crea un username con la inicial de nombre y apellido
 const createUserNames = function (accs) {
@@ -204,6 +231,8 @@ const createUserNames = function (accs) {
 };
 createUserNames(accounts);
 
+
+
 //Funcion que muestra informacion de la cuenta
 const updateUI = function (acc) {
   //Muestra transacciones
@@ -214,8 +243,12 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+
+
 //Manejo de evento con Login
 let currentAccount;
+
+
 
 //Loggin falso siempre
 currentAccount = account1;
@@ -223,11 +256,11 @@ updateUI(currentAccount);
 containerApp.style.opacity = 100;
 
 
+
 //Funcion para Login
 btnLogin.addEventListener('click', function (e) {
   //evitar un login
   e.preventDefault();
-
   //Localiza la cuenta que se ingresa
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
@@ -241,7 +274,6 @@ btnLogin.addEventListener('click', function (e) {
 
     //muestra el estilo css una vez logged
     containerApp.style.opacity = 100;
-
 
     // Crea la fecha actual
     const now = new Date();
@@ -275,6 +307,8 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+
+
 //Implementa Transferencias
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -305,6 +339,8 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+
+
 //Solicita Loan
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
@@ -323,6 +359,8 @@ btnLoan.addEventListener('click', function (e) {
   }
   inputLoanAmount.value = '';
 });
+
+
 
 //Borrar cuentas
 btnClose.addEventListener('click', function (e) {
@@ -345,6 +383,8 @@ btnClose.addEventListener('click', function (e) {
   }
   inputCloseUsername.value = inputClosePin.value = '';
 });
+
+
 
 //Funcionalidad para ordenar transacciones
 let sorted = false;
