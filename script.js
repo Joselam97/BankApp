@@ -21,8 +21,8 @@ const account1 = {
     '2024-12-05T23:36:17.929Z',
     '2024-12-02T10:32:36.790Z',
   ],
-  currency: 'EUR',
-  locale: 'pt-PT',
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account2 = {
@@ -47,7 +47,7 @@ const account2 = {
 
 const account3 = {
   owner: 'Molly Smith',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  movements: [200, -200, 340, -300, -20, 50, 400, 460],
   interestRate: 0.7,
   pin: 3333,
 
@@ -61,13 +61,13 @@ const account3 = {
     '2024-12-04T23:36:17.929Z',
     '2024-12-02T10:32:36.790Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'EUR',
+  locale: 'es-ES',
 };
 
 const account4 = {
   owner: 'Sarah Williams',
-  movements: [430, 1000, 700, 50, 90],
+  movements: [-430, 1000, 700, -50, 90, -135],
   interestRate: 1,
   pin: 4444,
 
@@ -82,7 +82,7 @@ const account4 = {
     '2024-12-05T10:32:36.790Z',
   ],
   currency: 'EUR',
-  locale: 'pt-PT',
+  locale: 'es-ES',
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -115,7 +115,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 
 // Funcion para dar formato a la fecha
-const formatMovementDate = function (date) {
+const formatMovementDate = function (date, locale) {
   const calcDisplayPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -125,10 +125,13 @@ const formatMovementDate = function (date) {
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
 
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  //const day = `${date.getDate()}`.padStart(2, 0);
+  //const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  //const year = date.getFullYear();
+  //return `${day}/${month}/${year}`;
+
+  //Esto es otra forma
+  return new Intl.DateTimeFormat(locale).format(date);
 };
 
 
@@ -144,7 +147,7 @@ const displayMovements = function (acc, sort = false) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date);
+    const displayDate = formatMovementDate(date, acc.locale);
 
     const html = `
         <div class="movements__row">
@@ -220,11 +223,6 @@ updateUI(currentAccount);
 containerApp.style.opacity = 100;
 
 
-//Internationalizing API
-const now = new Date();
-labelDate.textContent = new Intl.DateTimeFormat()
-
-
 //Funcion para Login
 btnLogin.addEventListener('click', function (e) {
   //evitar un login
@@ -247,12 +245,26 @@ btnLogin.addEventListener('click', function (e) {
 
     // Crea la fecha actual
     const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      weekday: 'long',
+    };
+
+    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options)
+    .format(now);
+
+//Esta es otra forma de hacerlo
+
+    //const day = `${now.getDate()}`.padStart(2, 0);
+    //const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    //const year = now.getFullYear();
+    //const hour = `${now.getHours()}`.padStart(2, 0);
+    //const min = `${now.getMinutes()}`.padStart(2, 0);
+    //labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
 
     //Limpia info del user en text inputs
