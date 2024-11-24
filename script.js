@@ -7,7 +7,7 @@
 // Data
 const account1 = {
   owner: 'Jose Alvarez',
-  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 300],
   interestRate: 1.2, // %
   pin: 1111,
 
@@ -27,7 +27,7 @@ const account1 = {
 
 const account2 = {
   owner: 'Yesenia Morales',
-  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  movements: [5000, 3400.1, -150, -790.99, -3210, -1300.2, 8500, -30.5],
   interestRate: 1.5,
   pin: 2222,
 
@@ -47,7 +47,7 @@ const account2 = {
 
 const account3 = {
   owner: 'Molly Smith',
-  movements: [200, -200, 340, -300, -20, 50, 400, 460],
+  movements: [222, -240.5, 345.89, -300.1, -20, 57, 400.99, 460],
   interestRate: 0.7,
   pin: 3333,
 
@@ -67,7 +67,7 @@ const account3 = {
 
 const account4 = {
   owner: 'Sarah Williams',
-  movements: [-430, 1000, 700, -50, 90, -135],
+  movements: [-430, 1250.2, 775.5, -50.99, 97, -135.45],
   interestRate: 1,
   pin: 4444,
 
@@ -138,7 +138,7 @@ const formatMovementDate = function (date, locale) {
 
 
 //Funcion para formatear currencies
-const formatCurr = function(value, locale, currency){
+const formatCurr = function (value, locale, currency) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
@@ -161,12 +161,8 @@ const displayMovements = function (acc, sort = false) {
     const date = new Date(acc.movementsDates[i]);
     const displayDate = formatMovementDate(date, acc.locale);
 
-
-
     //Variable que usa la funcion de dar formato al currency
     const formattedMov = formatCurr(mov, acc.locale, acc.currency);
-
-
 
     //Muestra informacion proveniente de html, pero formateada a cada cuenta
     const html = `
@@ -204,7 +200,11 @@ const calcDisplaySummary = function (acc) {
   const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = formatCurr(Math.abs(outcomes), acc.locale, acc.currency);
+  labelSumOut.textContent = formatCurr(
+    Math.abs(outcomes),
+    acc.locale,
+    acc.currency
+  );
 
   const interests = acc.movements
     .filter(mov => mov > 0)
@@ -214,7 +214,11 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = formatCurr(interests, acc.locale, acc.currency);
+  labelSumInterest.textContent = formatCurr(
+    interests,
+    acc.locale,
+    acc.currency
+  );
 };
 
 
@@ -286,10 +290,12 @@ btnLogin.addEventListener('click', function (e) {
       weekday: 'long',
     };
 
-    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options)
-    .format(now);
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
 
-//Esta es otra forma de hacerlo
+    //Esta es otra forma de hacerlo
 
     //const day = `${now.getDate()}`.padStart(2, 0);
     //const month = `${now.getMonth() + 1}`.padStart(2, 0);
@@ -297,7 +303,6 @@ btnLogin.addEventListener('click', function (e) {
     //const hour = `${now.getHours()}`.padStart(2, 0);
     //const min = `${now.getMinutes()}`.padStart(2, 0);
     //labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
 
     //Limpia info del user en text inputs
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -348,14 +353,18 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Math.floor(inputLoanAmount.value);
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    //Agrega movimiento
-    currentAccount.movements.push(amount);
 
-    //Agrega fecha al Loan
-    currentAccount.movementsDates.push(new Date().toISOString());
+    //Funcionn para crear un delay de 5s cuando se solicita un Loan
+    setTimeout(function () {
+      //Agrega movimiento
+      currentAccount.movements.push(amount);
 
-    //Restablece estilo
-    updateUI(currentAccount);
+      //Agrega fecha al Loan
+      currentAccount.movementsDates.push(new Date().toISOString());
+
+      //Restablece estilo
+      updateUI(currentAccount);
+    }, 5000);
   }
   inputLoanAmount.value = '';
 });
