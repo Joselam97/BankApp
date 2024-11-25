@@ -249,15 +249,45 @@ const updateUI = function (acc) {
 
 
 
+//Funcion para conteo de inactividad en app
+const startLogOutTimer = function() {
+  const tick = function() {
+  
+  // Llamar funcion cada seg
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    //cada llamada muestra el tiempo en la app
+    labelTimer.textContent = `${min}:${sec}`;
+    
+    //LogOut
+    if(time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started' 
+      containerApp.style.opacity = 0;
+    }
+    //restar 1seg
+    time--;
+  };
+  let time = 120;
+
+  //Lama la funcion cada seg para ir disminuyendo
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+
+
+
 //Manejo de evento con Login
-let currentAccount;
+let currentAccount, timer;
 
 
 
 //Loggin falso siempre
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+//currentAccount = account1;
+//updateUI(currentAccount);
+//containerApp.style.opacity = 100;
 
 
 
@@ -308,6 +338,10 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
+    //timer
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
+
     updateUI(currentAccount);
   }
 });
@@ -341,6 +375,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     //Actualiza el design
     updateUI(currentAccount);
+
+    //Reiniciar timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -364,6 +402,11 @@ btnLoan.addEventListener('click', function (e) {
 
       //Restablece estilo
       updateUI(currentAccount);
+
+      //Reiniciar timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
+    
     }, 5000);
   }
   inputLoanAmount.value = '';
@@ -400,8 +443,9 @@ let sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
 
-  displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
+
+  displayMovements(currentAccount, sorted);
 });
 
 /////////////////////////////////////////////////
