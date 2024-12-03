@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Defines character encoding and responsive settings -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- Shortcut icon for the webpage -->
+
     <link rel="shortcut icon" type="image/png" href="img/icon.png" />
 
+    <!-- External font from Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Links to the external stylesheet for page design -->
     <link rel="stylesheet" href="dashboardStyle.css" />
     <title>Bankist</title>
   </head>
   <body>
+    <!-- Header section containing the navigation bar and title -->
     <header class="header">
       <nav class="nav">
+        <!-- Company logo -->
         <img
           src="img/logo1.png"
           alt="Bankist logo"
           class="nav__logo"
           id="logo"
         />
+
+        <!-- Navigation links -->
         <ul class="nav__links">
           <li class="nav__item">
             <a class="nav__link" href="#section--1">Features</a>
@@ -33,6 +44,8 @@
             <a class="nav__link" href="#section--3">Testimonials</a>
           </li>
           <li class="nav__item">
+
+            <!-- Button for opening an account -->
             <a class="nav__link nav__link--btn btn--show-modal" href="#"
               >Open account</a
             >
@@ -41,6 +54,7 @@
       </nav>
 
       <div class="header__title">
+        <!-- Main title with highlighted words -->
         <h1>
           When
           <!-- Green highlight effect -->
@@ -49,7 +63,10 @@
           <span class="highlight">minimalist</span>
         </h1>
         <h4>A simpler banking experience for a simpler life.</h4>
+
+        <!-- Button to scroll to more content -->
         <button class="btn--text btn--scroll-to">Learn more &DownArrow;</button>
+        <!-- Hero image representing minimalism -->
         <img
           src="img/hero.png"
           class="header__img"
@@ -58,8 +75,10 @@
       </div>
     </header>
 
+    <!-- Section describing features of the bank -->
     <section class="section" id="section--1">
       <div class="section__title">
+        <!-- Title of the section -->
         <h2 class="section__description">Features</h2>
         <h3 class="section__header">
           Everything you need in a modern bank and more.
@@ -67,13 +86,16 @@
       </div>
 
       <div class="features">
+        <!-- Lazy-loaded image for digital banking -->
         <img
           src="img/digital-lazy.jpg"
           data-src="img/digital.jpg"
           alt="Computer"
           class="features__img lazy-img"
         />
+
         <div class="features__feature">
+          <!-- Icon and description of a feature -->
           <div class="features__icon">
             <svg>
               <use xlink:href="img/icons.svg#icon-monitor"></use>
@@ -87,6 +109,7 @@
           </p>
         </div>
 
+        <!-- Feature 2: Money Growth -->
         <div class="features__feature">
           <div class="features__icon">
             <svg>
@@ -100,19 +123,22 @@
             quibusdam!
           </p>
         </div>
+
+        <!-- Additional images for lazy-loading -->
         <img
           src="img/grow-lazy.jpg"
           data-src="img/grow.jpg"
           alt="Plant"
           class="features__img lazy-img"
         />
-
         <img
           src="img/card-lazy.jpg"
           data-src="img/card.jpg"
           alt="Credit card"
           class="features__img lazy-img"
         />
+
+        <!-- Feature 3: Free Debit Card -->
         <div class="features__feature">
           <div class="features__icon">
             <svg>
@@ -129,8 +155,10 @@
       </div>
     </section>
 
+    <!-- Section 2: Operations -->
     <section class="section" id="section--2">
       <div class="section__title">
+        <!-- Title for the operations section -->
         <h2 class="section__description">Operations</h2>
         <h3 class="section__header">
           Everything as simple as possible, but no simpler.
@@ -138,6 +166,7 @@
       </div>
 
       <div class="operations">
+        <!-- Tabs for operations -->
         <div class="operations__tab-container">
           <button
             class="btn operations__tab operations__tab--1 operations__tab--active"
@@ -152,9 +181,11 @@
             <span>03</span>Instant Closing
           </button>
         </div>
+
+        <!-- Tab Content -->
         <div
-          class="operations__content operations__content--1 operations__content--active"
-        >
+          class="operations__content operations__content--1 operations__content--active">
+          <!-- Feature for Instant Transfers -->
           <div class="operations__icon operations__icon--1">
             <svg>
               <use xlink:href="img/icons.svg#icon-upload"></use>
@@ -206,6 +237,7 @@
       </div>
     </section>
 
+    <!-- Testimonials -->
     <section class="section" id="section--3">
       <div class="section__title section__title--testimonials">
         <h2 class="section__description">Not sure yet?</h2>
@@ -214,7 +246,9 @@
         </h3>
       </div>
 
+      <!-- Testimonial Slider -->
       <div class="slider">
+        <!-- Testimonial 1 -->
         <div class="slide slide--1">
           <div class="testimonial">
             <h5 class="testimonial__header">Best financial decision ever!</h5>
@@ -234,6 +268,7 @@
           </div>
         </div>
 
+        <!-- Testimonial 2 -->
         <div class="slide slide--2">
           <div class="testimonial">
             <h5 class="testimonial__header">
@@ -254,6 +289,7 @@
           </div>
         </div>
 
+        <!-- Testimonial 3 -->
         <div class="slide slide--3">
           <div class="testimonial">
             <h5 class="testimonial__header">
