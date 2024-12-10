@@ -167,8 +167,99 @@ const loadImg = function (entries, observer) {
 
 const imgObserver = new IntersectionObserver(loadImg, {
   root: null,
-  threshold: 0, 
+  threshold: 0,
   rootMargin: '200px',
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
+
+///////////////////////////////////////
+//Slider Section
+
+const slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const dotContainer = document.querySelector('.dots');
+
+  let currentSlide = 0;
+  const maxSlide = slides.length;
+
+  //Functions
+
+  //Dots
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  //Activate Dots
+  const activateDots = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  //Slide
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  //Next Slide
+  const nexSlide = function () {
+    if (currentSlide === maxSlide - 1) {
+      currentSlide = 0;
+    } else {
+      currentSlide++;
+    }
+    goToSlide(currentSlide);
+    activateDots(currentSlide);
+  };
+
+  //Prev Slide
+  const prevSlide = function () {
+    if (currentSlide === 0) {
+      currentSlide = maxSlide - 1;
+    } else {
+      currentSlide--;
+    }
+    goToSlide(currentSlide);
+    activateDots(currentSlide);
+  };
+
+  //Dots Initializator
+  const init = function () {
+    goToSlide(0);
+    createDots();
+    activateDots(0);
+  };
+  init();
+
+  //Event Handlers
+  btnRight.addEventListener('click', nexSlide);
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') prevSlide();
+    e.key === 'ArrowRight' && nexSlide();
+  });
+
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      currentSlide = Number(e.target.dataset.slide);
+      goToSlide(currentSlide);
+      activateDots(currentSlide);
+    }
+  });
+};
+slider();
